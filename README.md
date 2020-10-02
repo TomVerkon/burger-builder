@@ -1,5 +1,15 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Project Structure
+
+### components folder 
+    holds stateless components
+### containers folder
+    holds statefull components
+
+
+### `containers folder` holds statefull components
+
 ## Available Scripts
 
 In the project directory, you can run:
