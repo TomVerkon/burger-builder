@@ -15,7 +15,7 @@ const BuildControl = props => {
 
 BuildControl.propTypes = {
   label: PropTypes.string.isRequired,
-  type:  PropTypes.string.isRequired,
+  type:  PropTypes.string,
   disabled: PropTypes.bool.isRequired,
   decHandler: PropTypes.func.isRequired,
   incHandler: PropTypes.func.isRequired

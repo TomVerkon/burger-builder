@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import Aux from "../../hoc/Auxillary";
 import Burger from "../../components/Burger/Burger";
 import BuildControls from "../../components/Burger/BuildControls/BuildControls";
+import Modal from "../../components/UI/Modal/Modal";
+import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
 
 const INGREDIENT_PRICES = {
   Salad: 0.3,
@@ -18,6 +20,28 @@ class BurgerBuilder extends Component {
       Meat: 0,
     },
     totalPrice: 4.0,
+    purchaseable: false,
+    purchasing: false,
+  };
+
+  updatePurchaseState = (ingredients) => {
+    // console.log(Object.keys(ingredients));
+    // console.log(Object.keys(ingredients).map(igKey => {
+    //   return ingredients[igKey]
+    // }));
+    // console.log(Object.keys(ingredients).map(igKey => {
+    //   return ingredients[igKey]
+    // }).reduce((sum, el) => {
+    //   return sum + el;
+    // }, 0));
+    const sum = Object.keys(ingredients)
+      .map((igKey) => {
+        return ingredients[igKey];
+      })
+      .reduce((sum, el) => {
+        return sum + el;
+      }, 0);
+    this.setState({ purchaseable: sum > 0 });
   };
 
   incrementIngredientHandler = (type) => {
@@ -35,6 +59,7 @@ class BurgerBuilder extends Component {
     tempIngredients[type] = updatedCount;
     const newPrice = this.state.totalPrice + INGREDIENT_PRICES[type];
     this.setState({ totalPrice: newPrice, chosenIngredients: tempIngredients });
+    this.updatePurchaseState(tempIngredients);
   };
 
   decrementIngredientHandler = (type) => {
@@ -50,6 +75,11 @@ class BurgerBuilder extends Component {
     tempIngredients[type] = updatedCount;
     const newPrice = this.state.totalPrice - INGREDIENT_PRICES[type];
     this.setState({ totalPrice: newPrice, chosenIngredients: tempIngredients });
+    this.updatePurchaseState(tempIngredients);
+  };
+
+  purchasingHandler = () => {
+    this.setState({ purchasing: true });
   };
 
   render() {
@@ -57,13 +87,20 @@ class BurgerBuilder extends Component {
     for (let key in disabledInfo) {
       disabledInfo[key] = disabledInfo[key] <= 0;
     }
+    
     return (
       <Aux>
+        <Modal show={this.state.purchasing} >
+          <OrderSummary chosenIngredients={this.state.chosenIngredients} />
+        </Modal>
         <Burger chosenIngredients={this.state.chosenIngredients} />
         <BuildControls
           disabledInfo={disabledInfo}
           incHandler={this.incrementIngredientHandler}
           decHandler={this.decrementIngredientHandler}
+          price={this.state.totalPrice}
+          purchaseable={this.state.purchaseable}
+          purchasingHandler={this.purchasingHandler}
         />
       </Aux>
     );
