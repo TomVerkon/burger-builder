@@ -1,4 +1,6 @@
 import React from "react";
+import Button from '../../UI/Button/Button';
+import PropTypes from 'prop-types';
 
 const OrderSummary = (props) => {
   const ingredientListItems = Object.keys(props.chosenIngredients).map(
@@ -20,8 +22,16 @@ const OrderSummary = (props) => {
         {ingredientListItems}
       </ul>
       <p>Continue to Check-Out?</p>
+      <Button btnType={'Danger'} clickHandler={props.cancelHandler}>CANCEL</Button>
+      <Button btnType={'Success'} clickHandler={props.continueHandler}>CONTINUE</Button>
     </>
   );
+};
+
+OrderSummary.propTypes = {
+  chosenIngredients: PropTypes.object.isRequired,
+  cancelHandler: PropTypes.func.isRequired,
+  continueHandler: PropTypes.func.isRequired,
 };
 
 export default OrderSummary;
