@@ -6,7 +6,7 @@ import Backdrop from "../Backdrop/Backdrop";
 const Modal = (props) => {
   return (
     <>
-      <Backdrop show={props.show} backdropClicked={props.backdropClicked} />
+      <Backdrop show={props.show} clicked={props.modalClosed} />
       <div
         className={classes.Modal}
         style={{
@@ -26,7 +26,7 @@ Modal.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
   ]).isRequired,
-  backdropClicked: PropTypes.func.isRequired
+  modalClosed: PropTypes.func.isRequired
 };
 
 export default Modal;

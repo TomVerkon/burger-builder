@@ -101,7 +101,7 @@ class BurgerBuilder extends Component {
       <Aux>
         <Modal
           show={this.state.purchasing}
-          backdropClicked={this.purchasingCancelHandler}
+          modalClosed={this.purchasingCancelHandler}
         >
           <OrderSummary
             chosenIngredients={this.state.chosenIngredients}
