@@ -1,33 +1,45 @@
-import React from "react";
-import Button from '../../UI/Button/Button';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import Button from "../../UI/Button/Button";
+import PropTypes from "prop-types";
 
-const OrderSummary = (props) => {
-  const ingredientListItems = Object.keys(props.chosenIngredients).map(
+class OrderSummary extends Component {
+  
+  componentWillUpdate() {
+    console.log("[OrderSUmmary] component will update");
+  }
+
+  ingredientListItems = Object.keys(this.props.chosenIngredients).map(
     (igKey, index) => {
       return (
         <li key={index}>
           <span style={{ textTransform: "capitalize" }}>
-            {igKey}: {props.chosenIngredients[igKey]}
+            {igKey}: {this.props.chosenIngredients[igKey]}
           </span>
         </li>
       );
     }
   );
-  return (
-    <>
-      <h3>Order Summary</h3>
-      <p>A delicious burger with the following ingredients:</p>
-      <ul>
-        {ingredientListItems}
-      </ul>
-      <p><strong>Your Price: {props.price.toFixed(2)}</strong></p>
-      <p>Continue to Check-Out?</p>
-      <Button btnType={'Danger'} clickHandler={props.cancelHandler}>CANCEL</Button>
-      <Button btnType={'Success'} clickHandler={props.continueHandler}>CONTINUE</Button>
-    </>
-  );
-};
+
+  render() {
+    return (
+      <>
+        <h3>Order Summary</h3>
+        <p>A delicious burger with the following ingredients:</p>
+        <ul>{this.ingredientListItems}</ul>
+        <p>
+          <strong>Your Price: {this.props.price.toFixed(2)}</strong>
+        </p>
+        <p>Continue to Check-Out?</p>
+        <Button btnType={"Danger"} clickHandler={this.props.cancelHandler}>
+          CANCEL
+        </Button>
+        <Button btnType={"Success"} clickHandler={this.props.continueHandler}>
+          CONTINUE
+        </Button>
+      </>
+    );
+  }
+}
 
 OrderSummary.propTypes = {
   chosenIngredients: PropTypes.object.isRequired,
