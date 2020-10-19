@@ -5,27 +5,28 @@ import PropTypes from "prop-types";
 class OrderSummary extends Component {
   
   componentWillUpdate() {
-    console.log("[OrderSUmmary] component will update");
+    // console.log("[OrderSummary] component will update");
   }
 
-  ingredientListItems = Object.keys(this.props.chosenIngredients).map(
-    (igKey, index) => {
-      return (
-        <li key={index}>
-          <span style={{ textTransform: "capitalize" }}>
-            {igKey}: {this.props.chosenIngredients[igKey]}
-          </span>
-        </li>
-      );
-    }
-  );
 
   render() {
+    const ingredientListItems = Object.keys(this.props.chosenIngredients).map(
+      (igKey, index) => {
+        return (
+          <li key={index}>
+            <span style={{ textTransform: "capitalize" }}>
+              {igKey}: {this.props.chosenIngredients[igKey]}
+            </span>
+          </li>
+        );
+      }
+    );
+  
     return (
       <>
         <h3>Order Summary</h3>
         <p>A delicious burger with the following ingredients:</p>
-        <ul>{this.ingredientListItems}</ul>
+        <ul>{ingredientListItems}</ul>
         <p>
           <strong>Your Price: {this.props.price.toFixed(2)}</strong>
         </p>

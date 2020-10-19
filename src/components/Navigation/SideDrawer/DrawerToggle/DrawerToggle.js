@@ -10,6 +10,8 @@ const DrawerToggle = (props) => (
   </div>
 );
 
-DrawerToggle.propTypes = {};
+DrawerToggle.propTypes = {
+  click: PropTypes.func.isRequired
+};
 
 export default DrawerToggle;

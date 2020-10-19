@@ -1,16 +1,13 @@
 import React, { Component } from "react";
-import Aux from "../../hoc/Auxillary";
 import Burger from "../../components/Burger/Burger";
 import BuildControls from "../../components/Burger/BuildControls/BuildControls";
 import Modal from "../../components/UI/Modal/Modal";
 import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
+import axios from "../../axios-orders";
+import Spinner from "../../components/UI/Spinner/Spinner";
+import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
+import INGREDIENT_PRICES from '../../INGREDIENT_PRICES'
 
-const INGREDIENT_PRICES = {
-  Salad: 0.3,
-  Bacon: 0.5,
-  Cheese: 0.2,
-  Meat: 1.3,
-};
 class BurgerBuilder extends Component {
   state = {
     chosenIngredients: {
@@ -19,41 +16,20 @@ class BurgerBuilder extends Component {
       Cheese: 0,
       Meat: 0,
     },
-    totalPrice: 4.0,
+    totalPrice: 4.0, /* 4.00 is base price */
     purchaseable: false,
     purchasing: false,
+    loading: false,
   };
 
   updatePurchaseState = (ingredients) => {
-    // console.log(Object.keys(ingredients));
-    // console.log(Object.keys(ingredients).map(igKey => {
-    //   return ingredients[igKey]
-    // }));
-    // console.log(Object.keys(ingredients).map(igKey => {
-    //   return ingredients[igKey]
-    // }).reduce((sum, el) => {
-    //   return sum + el;
-    // }, 0));
     const sum = Object.keys(ingredients)
-      .map((igKey) => {
-        return ingredients[igKey];
-      })
-      .reduce((sum, el) => {
-        return sum + el;
-      }, 0);
+      .map((igKey) => { return ingredients[igKey]; })
+      .reduce((sum, el) => { return sum + el; }, 0);
     this.setState({ purchaseable: sum > 0 });
   };
 
   incrementIngredientHandler = (type) => {
-    // my solution
-    // let tempIngredients = Object.fromEntries(
-    //   Object.entries(this.state.chosenIngredients).map(([key, value]) =>
-    //     key === type ? [key, value + 1] : [key, value]
-    //   )
-    // );
-    // this.setState({ chosenIngredients: tempIngredients, totalPrice: this.state.totalPrice + INGREDIENT_PRICES[type] });
-
-    // his solution, better cause no iterating through array
     const updatedCount = this.state.chosenIngredients[type] + 1;
     const tempIngredients = { ...this.state.chosenIngredients };
     tempIngredients[type] = updatedCount;
@@ -63,13 +39,6 @@ class BurgerBuilder extends Component {
   };
 
   decrementIngredientHandler = (type) => {
-    // my solution
-    // let tempIngredients = Object.fromEntries(
-    //   Object.entries(this.state.chosenIngredients).map(([key, value]) =>
-    //     key === type && value > 0 ? [key, value - 1] : [key, value]
-    //   )
-    // );
-    // his solution
     const updatedCount = this.state.chosenIngredients[type] - 1;
     const tempIngredients = { ...this.state.chosenIngredients };
     tempIngredients[type] = updatedCount;
@@ -87,9 +56,32 @@ class BurgerBuilder extends Component {
   };
 
   purchasingContinueHandler = () => {
-    alert("You will continue!");
-    this.purchasingCancelHandler();
-  }
+    this.setState({ loading: true });
+    const order = {
+      ingredients: this.state.chosenIngredients,
+      price: this.state.totalPrice,
+      customer: {
+        name: "Joe BagoDonuts",
+        address: {
+          street: "211 Dalton Dr",
+          city: "Buffalo",
+          zipcode: "14223",
+        },
+        email: "joebagodonuts@gmail.com",
+      },
+      deliveryMethod: "fastest",
+    };
+    axios
+      .post("/orders.json", order)
+      .then((response) => {
+        console.log('Post response: ' + JSON.stringify(response));
+        this.setState({ loading: false, purchasing: false });
+      })
+      .catch((error) => {
+        console.log('Post error: ' + JSON.stringify(error));
+        this.setState({ loading: false, purchasing: false });
+      });
+  };
 
   render() {
     const disabledInfo = { ...this.state.chosenIngredients };
@@ -97,18 +89,25 @@ class BurgerBuilder extends Component {
       disabledInfo[key] = disabledInfo[key] <= 0;
     }
 
+    let orderSummary = (
+      <OrderSummary
+        chosenIngredients={this.state.chosenIngredients}
+        cancelHandler={this.purchasingCancelHandler}
+        continueHandler={this.purchasingContinueHandler}
+        price={this.state.totalPrice}
+      />
+    );
+    if (this.state.loading) {
+      orderSummary = <Spinner />;
+    }
+
     return (
-      <Aux>
+      <>
         <Modal
           show={this.state.purchasing}
           modalClosed={this.purchasingCancelHandler}
         >
-          <OrderSummary
-            chosenIngredients={this.state.chosenIngredients}
-            cancelHandler={this.purchasingCancelHandler}
-            continueHandler={this.purchasingContinueHandler}
-            price={this.state.totalPrice}
-          />
+          {orderSummary}
         </Modal>
         <Burger chosenIngredients={this.state.chosenIngredients} />
         <BuildControls
@@ -119,9 +118,9 @@ class BurgerBuilder extends Component {
           purchaseable={this.state.purchaseable}
           purchasingHandler={this.purchasingHandler}
         />
-      </Aux>
+      </>
     );
   }
 }
 
-export default BurgerBuilder;
+export default withErrorHandler(BurgerBuilder, axios);
