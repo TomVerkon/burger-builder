@@ -10,12 +10,12 @@ class OrderSummary extends Component {
 
 
   render() {
-    const ingredientListItems = Object.keys(this.props.chosenIngredients).map(
+    const ingredientListItems = Object.keys(this.props.ingredients).map(
       (igKey, index) => {
         return (
           <li key={index}>
             <span style={{ textTransform: "capitalize" }}>
-              {igKey}: {this.props.chosenIngredients[igKey]}
+              {igKey}: {this.props.ingredients[igKey]}
             </span>
           </li>
         );
@@ -43,7 +43,7 @@ class OrderSummary extends Component {
 }
 
 OrderSummary.propTypes = {
-  chosenIngredients: PropTypes.object.isRequired,
+  ingredients: PropTypes.object,
   cancelHandler: PropTypes.func.isRequired,
   continueHandler: PropTypes.func.isRequired,
 };

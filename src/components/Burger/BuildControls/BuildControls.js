@@ -21,16 +21,16 @@ const BuildControls = (props) => {
           <BuildControl
             label={ctrl.label}
             key={ctrl.label}
-            incHandler={() => props.incHandler(ctrl.type)}
-            decHandler={() => props.decHandler(ctrl.type)}
+            incHandler={() => props.ingredientAdded(ctrl.type)}
+            decHandler={() => props.ingredientRemoved(ctrl.type)}
             disabled={props.disabledInfo[ctrl.type]}
           />
         );
       })}
       <button
         className={classes.OrderButton}
-        disabled={!props.purchaseable}
-        onClick={props.purchasingHandler}
+        disabled={!props.purchasable}
+        onClick={props.ordered}
       >
         ORDER NOW
       </button>

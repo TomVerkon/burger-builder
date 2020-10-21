@@ -4,8 +4,8 @@ import classes from "./Burger.module.css";
 import BurgerIngredient from "./Ingredients/BurgerIngredient";
 
 const Burger = (props) => {
-  let ingredients = Object.keys(props.chosenIngredients).map((igKey) => {
-    return [...Array(props.chosenIngredients[igKey])].map((_, i) => (
+  let ingredients = Object.keys(props.ingredients).map((igKey) => {
+    return [...Array(props.ingredients[igKey])].map((_, i) => (
       <BurgerIngredient key={igKey + i} type={igKey} />
     ))
   }).reduce((arr, el) => {
@@ -28,7 +28,7 @@ const Burger = (props) => {
 };
 
 Burger.propTypes = {
-  chosenIngredients: PropTypes.object.isRequired
+  ingredients: PropTypes.object.isRequired
 };
 
 export default Burger;
